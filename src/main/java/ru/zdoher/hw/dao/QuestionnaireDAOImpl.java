@@ -1,46 +1,40 @@
 package ru.zdoher.hw.dao;
 
 import com.opencsv.CSVReader;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
-import ru.zdoher.hw.domain.Question;
+import ru.zdoher.hw.domain.Answer;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 public class QuestionnaireDAOImpl implements QuestionnaireDAO {
-    private List<Question> questions = new ArrayList<>();
+    private Map<String, List<Answer>> questions = new HashMap<>();
 
     public QuestionnaireDAOImpl(String file) throws IOException {
-        CsvToBean csvToBean = new CsvToBean();
-        CSVReader csvReader = new CSVReader(new FileReader(file));
-        ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-        strategy.setType(Question.class);
-        String[] columns = new String[] {"id","question", "answer"};
-        strategy.setColumnMapping(columns);
 
+        Reader reader = Files.newBufferedReader(Paths.get(file));
+        CSVReader csvReader = new CSVReader(reader);
+        String[] nextRecord;
+        while ((nextRecord = csvReader.readNext()) != null) {
+            List<Answer> answerList = new ArrayList<>();
+            answerList.add(new Answer(nextRecord[1], true));
 
-        List list = csvToBean.parse(strategy, csvReader);
-        for(Object object : list) {
-            questions.add((Question) object);
+            for(int i = 2; i < nextRecord.length; i++) {
+                answerList.add(new Answer(nextRecord[i], false));
+            }
+
+            Collections.shuffle(answerList);
+
+            questions.put(nextRecord[0], answerList);
+
         }
-
-        Collections.shuffle(questions);
-
     }
 
     @Override
-    public List<Question> getQuistionList() {
+    public Map<String, List<Answer>> getQuistionList() {
         return questions;
     }
 
-
-    public void printList() {
-        for (Question question : questions) {
-            System.out.println(question);
-        }
-    }
 }

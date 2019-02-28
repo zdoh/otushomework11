@@ -12,7 +12,7 @@
         <constructor-arg ref="questionDao"/>
     </bean>
 
-    <bean id="testingService" class="ru.zdoher.hw.service.TestingServiceImpl" >
+    <bean id="testing" class="ru.zdoher.hw.view.TestingImpl" >
         <constructor-arg ref="questionService" />
     </bean>
 

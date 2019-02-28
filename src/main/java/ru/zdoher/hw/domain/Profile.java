@@ -3,15 +3,17 @@ package ru.zdoher.hw.domain;
 public class Profile {
     private String name;
     private String surname;
-    private String points;
+    private int points;
+    private int rightAnswer;
 
     public Profile() {
     }
 
-    public Profile(String name, String surname, String points) {
+    public Profile(String name, String surname, Integer points, Integer rightAnswer) {
         this.name = name;
         this.surname = surname;
         this.points = points;
+        this.rightAnswer = rightAnswer;
     }
 
     public String getName() {
@@ -30,12 +32,20 @@ public class Profile {
         this.surname = surname;
     }
 
-    public String getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(String points) {
+    public void setPoints(int points) {
         this.points = points;
+    }
+
+    public int getRightAnswer() {
+        return rightAnswer;
+    }
+
+    public void setRightAnswer(int rightAnswer) {
+        this.rightAnswer = rightAnswer;
     }
 
     @Override
@@ -44,6 +54,7 @@ public class Profile {
                 "name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", points='" + points + '\'' +
+                ", rightAnswer=" + rightAnswer +
                 '}';
     }
 }
