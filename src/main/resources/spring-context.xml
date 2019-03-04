@@ -4,8 +4,10 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
+    <!-- В файле japanLanguageWordTest.csv 2 столбец всегда верный -->
+
     <bean id="questionDao" class="ru.zdoher.hw.dao.QuestionnaireDAOImpl" >
-        <constructor-arg value="src/main/resources/question.csv"/>
+        <constructor-arg value="src/main/resources/japanLanguageWordTest.csv"/>
     </bean>
 
     <bean id="questionService" class="ru.zdoher.hw.service.QuestionnaireServiceImpl" >
