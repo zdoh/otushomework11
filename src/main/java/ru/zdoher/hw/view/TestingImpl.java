@@ -1,5 +1,6 @@
 package ru.zdoher.hw.view;
 
+import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Answer;
 import ru.zdoher.hw.domain.Profile;
 import ru.zdoher.hw.service.QuestionnaireService;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+@Service
 public class TestingImpl implements Testing {
     private final QuestionnaireService questionnaireService;
     private Profile profile = new Profile();

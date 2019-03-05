@@ -1,18 +1,26 @@
 package ru.zdoher.hw.dao;
 
 import com.opencsv.CSVReader;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Answer;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+
+@PropertySource("classpath:application.properties")
+@Service
 public class QuestionnaireDAOImpl implements QuestionnaireDAO {
     private Map<String, List<Answer>> questions = new HashMap<>();
 
-    public QuestionnaireDAOImpl(String file) throws IOException {
+    @PostConstruct
+    public void init(@Value("${file.test}") String file) throws IOException {
 
         Reader reader = Files.newBufferedReader(Paths.get(file));
         CSVReader csvReader = new CSVReader(reader);
@@ -30,6 +38,10 @@ public class QuestionnaireDAOImpl implements QuestionnaireDAO {
             questions.put(nextRecord[0], answerList);
 
         }
+    }
+
+
+    public QuestionnaireDAOImpl() {
     }
 
     @Override
