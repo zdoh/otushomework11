@@ -19,30 +19,30 @@ import java.util.*;
 public class QuestionnaireDAOImpl implements QuestionnaireDAO {
     private Map<String, List<Answer>> questions = new HashMap<>();
 
-    @PostConstruct
-    public void init(@Value("${file.test}") String file) throws IOException {
+    @Value("${file.test}")
+    private String csvFile;
 
-        Reader reader = Files.newBufferedReader(Paths.get(file));
+    @PostConstruct
+    public void init() throws IOException {
+        Reader reader = Files.newBufferedReader(Paths.get(csvFile));
         CSVReader csvReader = new CSVReader(reader);
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) {
-            List<Answer> answerList = new ArrayList<>();
-            answerList.add(new Answer(nextRecord[1], true));
+            if(nextRecord.length >= 3) {
+                List<Answer> answerList = new ArrayList<>();
+                answerList.add(new Answer(nextRecord[1], true));
 
-            for(int i = 2; i < nextRecord.length; i++) {
-                answerList.add(new Answer(nextRecord[i], false));
+                for (int i = 2; i < nextRecord.length; i++) {
+                    answerList.add(new Answer(nextRecord[i], false));
+                }
+
+                Collections.shuffle(answerList);
+
+                questions.put(nextRecord[0], answerList);
             }
-
-            Collections.shuffle(answerList);
-
-            questions.put(nextRecord[0], answerList);
-
         }
     }
 
-
-    public QuestionnaireDAOImpl() {
-    }
 
     @Override
     public Map<String, List<Answer>> getQuistionList() {
