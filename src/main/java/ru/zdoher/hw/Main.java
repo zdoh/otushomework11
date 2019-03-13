@@ -21,11 +21,11 @@ public class Main {
 
     }
 
-    @Bean
+    /*@Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
         ms.setBasename("bundle");
         ms.setDefaultEncoding("UTF-8");
         return ms;
-    }
+    }*/
 }

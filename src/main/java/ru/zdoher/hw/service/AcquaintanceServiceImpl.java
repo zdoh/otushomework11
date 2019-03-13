@@ -8,11 +8,11 @@ import ru.zdoher.hw.domain.Profile;
 public class AcquaintanceServiceImpl implements AcquaintanceService {
     private final ConsoleService consoleService;
 
-    @Autowired
     private LocalizationService localizationService;
 
-    public AcquaintanceServiceImpl(ConsoleService consoleService) {
+    public AcquaintanceServiceImpl(ConsoleService consoleService, LocalizationService localizationService) {
         this.consoleService = consoleService;
+        this.localizationService = localizationService;
     }
 
     @Override
