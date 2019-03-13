@@ -1,10 +1,12 @@
 package ru.zdoher.hw.dao;
 
 import com.opencsv.CSVReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Answer;
+import ru.zdoher.hw.service.LocalizationService;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -14,17 +16,20 @@ import java.nio.file.Paths;
 import java.util.*;
 
 
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
 @Service
 public class QuestionnaireDAOImpl implements QuestionnaireDAO {
     private Map<String, List<Answer>> questions = new HashMap<>();
 
-    @Value("${file.test}")
-    private String csvFile;
+    @Autowired
+    private LocalizationService localizationService;
+
+   /* @Value("${file.test}")
+    private String csvFile;*/
 
     @PostConstruct
     public void init() throws IOException {
-        Reader reader = Files.newBufferedReader(Paths.get(csvFile));
+        Reader reader = Files.newBufferedReader(Paths.get(localizationService.getMessage("file.test")));
         CSVReader csvReader = new CSVReader(reader);
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) {

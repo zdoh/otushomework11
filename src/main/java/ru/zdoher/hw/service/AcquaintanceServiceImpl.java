@@ -1,5 +1,6 @@
 package ru.zdoher.hw.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Profile;
 
@@ -7,16 +8,19 @@ import ru.zdoher.hw.domain.Profile;
 public class AcquaintanceServiceImpl implements AcquaintanceService {
     private final ConsoleService consoleService;
 
+    @Autowired
+    private LocalizationService localizationService;
+
     public AcquaintanceServiceImpl(ConsoleService consoleService) {
         this.consoleService = consoleService;
     }
 
     @Override
     public void makeAcquantance(Profile profile) {
-        consoleService.printString("Добро пожаловать в тест, представьтесь пожалуйста.");
-        consoleService.printString("Ваше имя: ");
+        consoleService.printString(localizationService.getMessage("message.presentation"));
+        consoleService.printString(localizationService.getMessage("message.enterName"));
         profile.setName(consoleService.getString());
-        consoleService.printString("Ваша фамилия: ");
+        consoleService.printString(localizationService.getMessage("message.enterSurname"));
         profile.setSurname(consoleService.getString());
     }
 }

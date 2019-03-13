@@ -1,45 +1,41 @@
 package ru.zdoher.hw.view;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Answer;
 import ru.zdoher.hw.domain.Profile;
 import ru.zdoher.hw.service.AcquaintanceService;
 import ru.zdoher.hw.service.ConsoleService;
+import ru.zdoher.hw.service.LocalizationService;
 import ru.zdoher.hw.service.QuestionnaireService;
 
 import java.util.List;
 import java.util.Map;
 
-//@PropertySource("classpath:application.properties")
 @Service
 public class TestingImpl implements Testing {
     private final QuestionnaireService questionnaireService;
     private final AcquaintanceService acquaintanceService;
     private final ConsoleService consoleService;
+    private final LocalizationService localizationService;
+
     private Profile profile = new Profile();
 
-    //@Autowired
-    private MessageSource ms;
-
-
-    public TestingImpl(QuestionnaireService questionnaireService, AcquaintanceService acquaintanceService, ConsoleService consoleService) {
+    public TestingImpl(QuestionnaireService questionnaireService,
+                       AcquaintanceService acquaintanceService,
+                       ConsoleService consoleService,
+                       LocalizationService localizationService) {
         this.questionnaireService = questionnaireService;
         this.acquaintanceService = acquaintanceService;
         this.consoleService = consoleService;
+        this.localizationService = localizationService;
     }
 
     @Override
     public void doTest()  {
         acquaintanceService.makeAcquantance(profile);
-        consoleService.printString("Начинаем тестирование. За каждый правильный ответ получаете два балла");
+        consoleService.printString(localizationService.getMessage("message.beginTesting"));
         testing();
-        consoleService.printString("Тестироварие закончено. Ваши результаты");
+        consoleService.printString(localizationService.getMessage("message.endTesting"));
         testingResult();
     }
 
@@ -60,7 +56,7 @@ public class TestingImpl implements Testing {
     private void printQuestion(String question, List<Answer> answerList) {
         consoleService.printString(question);
 
-        consoleService.printString("Варианты ответа: ");
+        consoleService.printString(localizationService.getMessage("message.answerVariant"));
 
         for(int i = 0; i < answerList.size(); i++) {
             consoleService.printString((i + 1) + ": " + answerList.get(i).getAnswer());
@@ -70,7 +66,7 @@ public class TestingImpl implements Testing {
     private int getAnswerId(List<Answer> answerList) {
         int answerId = 0;
         while (answerId < 1 || answerId > answerList.size()) {
-            consoleService.printString("Выберите номер ответа (от 1 до " + (answerList.size() ) + "):");
+            consoleService.printString(localizationService.getMessage("message.answerChoose") + " " + (answerList.size() ) + "):");
             try {
                 answerId = Integer.parseInt(consoleService.getString());
             } catch (NumberFormatException e) {
@@ -89,10 +85,10 @@ public class TestingImpl implements Testing {
     }
 
     private void testingResult() {
-        consoleService.printString("Имя: " + profile.getName());
-        consoleService.printString("Фамилия: " + profile.getSurname());
-        consoleService.printString("Кол-во правильных ответов: " + profile.getRightAnswer() + "/" + questionnaireService.getQuestionList().size());
-        consoleService.printString("Кол-во очков: " + profile.getPoints());
+        consoleService.printString(localizationService.getMessage("message.resultName") + profile.getName());
+        consoleService.printString(localizationService.getMessage("message.resultSurname") + profile.getSurname());
+        consoleService.printString(localizationService.getMessage("message.resultCorrectAnswerNumber") + profile.getRightAnswer() + "/" + questionnaireService.getQuestionList().size());
+        consoleService.printString(localizationService.getMessage("message.resultPointCount") + profile.getPoints());
 
     }
 
