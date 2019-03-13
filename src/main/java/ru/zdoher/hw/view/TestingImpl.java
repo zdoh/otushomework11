@@ -23,8 +23,6 @@ public class TestingImpl implements Testing {
     private final ConsoleService consoleService;
     private Profile profile = new Profile();
 
-    @Autowired
-    private Environment env;
 
 
     public TestingImpl(QuestionnaireService questionnaireService, AcquaintanceService acquaintanceService, ConsoleService consoleService) {
@@ -36,7 +34,7 @@ public class TestingImpl implements Testing {
     @Override
     public void doTest()  {
         acquaintanceService.makeAcquantance(profile);
-        consoleService.printString(env.getProperty("message.beginTest"));
+        consoleService.printString("Начинаем тестирование. За каждый правильный ответ получаете два балла");
         testing();
         consoleService.printString("Тестироварие закончено. Ваши результаты");
         testingResult();
@@ -46,19 +44,14 @@ public class TestingImpl implements Testing {
         for(Map.Entry<String, List<Answer>> tempMap : questionnaireService.getQuestionList().entrySet()) {
 
             printQuestion(tempMap.getKey(), tempMap.getValue());
+
             int answerId = getAnswerId(tempMap.getValue());
 
-
-
-            if (tempMap.getValue().get(answerId - 1).getRight()) {
-                profile.setRightAnswer(profile.getRightAnswer() + 1);
-                profile.setPoints(profile.getPoints() + 2);
-            }
+            checkAnswerResult(answerId, tempMap.getValue());
 
             consoleService.printString("");
 
         }
-
     }
 
     private void printQuestion(String question, List<Answer> answerList) {
@@ -85,6 +78,12 @@ public class TestingImpl implements Testing {
         return answerId;
     }
 
+    private void checkAnswerResult(int answerId, List<Answer> answerList) {
+        if (answerList.get(answerId - 1).getRight()) {
+            profile.setRightAnswer(profile.getRightAnswer() + 1);
+            profile.setPoints(profile.getPoints() + 2);
+        }
+    }
 
     private void testingResult() {
         consoleService.printString("Имя: " + profile.getName());
@@ -96,6 +95,8 @@ public class TestingImpl implements Testing {
 
     private MessageSource messageSource() {
         ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setBasename("/i18n/");
+        ms.setBasename("application");
+        ms.setDefaultEncoding("UTF-8");
+        return ms;
     }
 }
