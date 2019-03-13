@@ -2,6 +2,7 @@ package ru.zdoher.hw.view;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
@@ -15,7 +16,7 @@ import ru.zdoher.hw.service.QuestionnaireService;
 import java.util.List;
 import java.util.Map;
 
-@PropertySource("classpath:application.properties")
+//@PropertySource("classpath:application.properties")
 @Service
 public class TestingImpl implements Testing {
     private final QuestionnaireService questionnaireService;
@@ -23,6 +24,8 @@ public class TestingImpl implements Testing {
     private final ConsoleService consoleService;
     private Profile profile = new Profile();
 
+    //@Autowired
+    private MessageSource ms;
 
 
     public TestingImpl(QuestionnaireService questionnaireService, AcquaintanceService acquaintanceService, ConsoleService consoleService) {
@@ -93,10 +96,5 @@ public class TestingImpl implements Testing {
 
     }
 
-    private MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource ms = new ReloadableResourceBundleMessageSource();
-        ms.setBasename("application");
-        ms.setDefaultEncoding("UTF-8");
-        return ms;
-    }
+
 }
