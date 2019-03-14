@@ -1,6 +1,5 @@
 package ru.zdoher.hw.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Profile;
 

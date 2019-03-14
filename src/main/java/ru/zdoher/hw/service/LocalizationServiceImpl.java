@@ -11,16 +11,18 @@ import java.util.Locale;
 @Service
 public class LocalizationServiceImpl implements LocalizationService {
 
-    @Value("${locale}")
-    private Locale locale;
+    private final Locale locale;
 
-    @Value("file.test")
     private String fileNameMes;
 
     private MessageSource ms;
 
-    public LocalizationServiceImpl(MessageSource ms) {
+    public LocalizationServiceImpl(MessageSource ms,
+                                   @Value("${locale}") Locale locale,
+                                   @Value("${file}") String fileNameMes) {
         this.ms = ms;
+        this.locale = locale;
+        this.fileNameMes = locale + "_" + fileNameMes;
     }
 
 
@@ -29,6 +31,6 @@ public class LocalizationServiceImpl implements LocalizationService {
     }
 
     public String getQuizFilename() {
-        return ms.getMessage(fileNameMes, null, locale);
+        return fileNameMes;
     }
 }

@@ -7,8 +7,7 @@ import ru.zdoher.hw.domain.Answer;
 import ru.zdoher.hw.service.LocalizationService;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -18,13 +17,16 @@ import java.util.*;
 public class QuestionnaireDAOImpl implements QuestionnaireDAO {
     private Map<String, List<Answer>> questions = new HashMap<>();
 
-    @Autowired
     private LocalizationService localizationService;
 
     @PostConstruct
     public void init() throws IOException {
-        Reader reader = Files.newBufferedReader(Paths.get(localizationService.getQuizFilename()));
-        CSVReader csvReader = new CSVReader(reader);
+
+        File file = new File(Objects.requireNonNull(
+                getClass().getClassLoader().getResource(localizationService.getQuizFilename())).getFile()
+        );
+
+        CSVReader csvReader = new CSVReader(new FileReader(file));
         String[] nextRecord;
         while ((nextRecord = csvReader.readNext()) != null) {
             if(nextRecord.length >= 3) {
@@ -40,6 +42,11 @@ public class QuestionnaireDAOImpl implements QuestionnaireDAO {
                 questions.put(nextRecord[0], answerList);
             }
         }
+    }
+
+    public QuestionnaireDAOImpl(LocalizationService localizationService) {
+        this.localizationService = localizationService;
+
     }
 
 
