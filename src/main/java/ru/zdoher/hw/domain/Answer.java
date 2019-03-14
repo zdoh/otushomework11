@@ -1,11 +1,8 @@
 package ru.zdoher.hw.domain;
 
 public class Answer {
-    private String answer;
-    private Boolean right;
-
-    public Answer() {
-    }
+    private final String answer;
+    private final Boolean right;
 
     public Answer(String answer, Boolean right) {
         this.answer = answer;
@@ -16,16 +13,8 @@ public class Answer {
         return answer;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
     public Boolean getRight() {
         return right;
-    }
-
-    public void setRight(Boolean right) {
-        this.right = right;
     }
 
     @Override

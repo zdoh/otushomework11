@@ -1,79 +1,96 @@
 package ru.zdoher.hw.view;
 
+import org.springframework.stereotype.Service;
 import ru.zdoher.hw.domain.Answer;
 import ru.zdoher.hw.domain.Profile;
+import ru.zdoher.hw.service.AcquaintanceService;
+import ru.zdoher.hw.service.ConsoleService;
+import ru.zdoher.hw.service.LocalizationService;
 import ru.zdoher.hw.service.QuestionnaireService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
+@Service
 public class TestingImpl implements Testing {
     private final QuestionnaireService questionnaireService;
+    private final AcquaintanceService acquaintanceService;
+    private final ConsoleService consoleService;
+    private final LocalizationService localizationService;
+
     private Profile profile = new Profile();
 
-
-    public TestingImpl(QuestionnaireService questionnaireService) {
+    public TestingImpl(QuestionnaireService questionnaireService,
+                       AcquaintanceService acquaintanceService,
+                       ConsoleService consoleService,
+                       LocalizationService localizationService) {
         this.questionnaireService = questionnaireService;
+        this.acquaintanceService = acquaintanceService;
+        this.consoleService = consoleService;
+        this.localizationService = localizationService;
     }
 
     @Override
     public void doTest()  {
-        acquaintance();
-        System.out.println("Начинаем тестирование. За каждый правильный ответ получаете два балла");
+        acquaintanceService.makeAcquantance(profile);
+        consoleService.printString(localizationService.getMessage("message.beginTesting"));
         testing();
-        System.out.println("Тестироварие закончено. Ваши результаты");
+        consoleService.printString(localizationService.getMessage("message.endTesting"));
         testingResult();
-    }
-
-    private void acquaintance() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Добро пожаловать в тест, представьтесь пожалуйста.");
-        System.out.print("Ваше имя: ");
-        profile.setName(scanner.next());
-        System.out.print("Ваша фамилия: ");
-        profile.setSurname(scanner.next());
-
     }
 
     private void testing() {
         for(Map.Entry<String, List<Answer>> tempMap : questionnaireService.getQuestionList().entrySet()) {
-            System.out.println(tempMap.getKey());
 
-            System.out.println("Варианты ответа: ");
+            printQuestion(tempMap.getKey(), tempMap.getValue());
 
-            for(int i = 0; i < tempMap.getValue().size(); i++) {
-                System.out.println((i + 1) + ": " + tempMap.getValue().get(i).getAnswer());
-            }
+            int answerId = getAnswerId(tempMap.getValue());
 
-            int answerId = 0;
-            while (answerId < 1 || answerId > tempMap.getValue().size()) {
-                System.out.println("Выберите номер ответа (от 1 до " + (tempMap.getValue().size() ) + "):");
-                Scanner scanner = new Scanner(System.in);
+            checkAnswerResult(answerId, tempMap.getValue());
 
-                try {
-                    answerId = Integer.parseInt(scanner.next());
-                } catch (NumberFormatException e) {
-
-                }
-            }
-
-            if (tempMap.getValue().get(answerId - 1).getRight()) {
-                profile.setRightAnswer(profile.getRightAnswer() + 1);
-                profile.setPoints(profile.getPoints() + 2);
-            }
-
-            System.out.println();
+            consoleService.printString("");
 
         }
+    }
 
+    private void printQuestion(String question, List<Answer> answerList) {
+        consoleService.printString(question);
+
+        consoleService.printString(localizationService.getMessage("message.answerVariant"));
+
+        for(int i = 0; i < answerList.size(); i++) {
+            consoleService.printString((i + 1) + ": " + answerList.get(i).getAnswer());
+        }
+    }
+
+    private int getAnswerId(List<Answer> answerList) {
+        int answerId = 0;
+        while (answerId < 1 || answerId > answerList.size()) {
+            consoleService.printString(localizationService.getMessage("message.answerChoose") + " " + (answerList.size() ) + "):");
+            try {
+                answerId = Integer.parseInt(consoleService.getString());
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
+        return answerId;
+    }
+
+    private void checkAnswerResult(int answerId, List<Answer> answerList) {
+        if (answerList.get(answerId - 1).getRight()) {
+            profile.setRightAnswer(profile.getRightAnswer() + 1);
+            profile.setPoints(profile.getPoints() + 2);
+        }
     }
 
     private void testingResult() {
-        System.out.println("Имя: " + profile.getName());
-        System.out.println("Фамилия: " + profile.getSurname());
-        System.out.println("Кол-во правильных ответов: " + profile.getRightAnswer() + "/" + questionnaireService.getQuestionList().size());
-        System.out.println("Кол-во очков: " + profile.getPoints());
+        consoleService.printString(localizationService.getMessage("message.resultName") + profile.getName());
+        consoleService.printString(localizationService.getMessage("message.resultSurname") + profile.getSurname());
+        consoleService.printString(localizationService.getMessage("message.resultCorrectAnswerNumber") + profile.getRightAnswer() + "/" + questionnaireService.getQuestionList().size());
+        consoleService.printString(localizationService.getMessage("message.resultPointCount") + profile.getPoints());
 
     }
+
+
 }

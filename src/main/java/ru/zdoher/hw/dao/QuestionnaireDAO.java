@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface QuestionnaireDAO {
 
-    Map<String, List<Answer>> getQuistionList();
+    Map<String, List<Answer>> getQuestionList();
 }
