@@ -17,6 +17,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
     @Override
     public Map<String, List<Answer>> getQuestionList() {
-        return questionnaireDAO.getQuistionList();
+        return questionnaireDAO.getQuestionList();
     }
 }

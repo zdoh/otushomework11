@@ -37,7 +37,7 @@ class QuestionnaireServiceImplTest {
                 new Answer("answer1", true),
                 new Answer("answer2", false))));
 
-        given(questionnaireDAO.getQuistionList()).willReturn(testQuesDAO);
+        given(questionnaireDAO.getQuestionList()).willReturn(testQuesDAO);
 
         assertAll(
                 () -> assertThat(questionnaireService.getQuestionList()).containsKeys("Question1"),
